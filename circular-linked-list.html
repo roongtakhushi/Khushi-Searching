@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Circular Linked List - Complete Guide & Visualization. Learn theory to advanced with interactive animations and hands-on playground." />
+  <title>Circular Linked List - Complete Guide & Visualization</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-primary: #2563eb;
+      --color-primary-600: #1d4ed8;
+      --color-secondary: #7c3aed;
+      --color-accent: #10b981;
+      --color-warn: #f59e0b;
+      --color-danger: #ef4444;
+      --bg: #f8fafc;
+      --bg-elev: #ffffff;
+      --text: #0f172a;
+      --muted: #475569;
+      --border: #e2e8f0;
+      --shadow: 0 8px 24px rgba(15,23,42,0.08);
+      --radius: 12px;
+      --radius-sm: 10px;
+      --radius-lg: 16px;
+      --focus: 0 0 0 3px rgba(37, 99, 235, 0.35);
+      --code-bg: #0b1220;
+      --code-fg: #e5e7eb;
+      --green: #10b981;
+      --yellow: #f59e0b;
+      --blue: #2563eb;
+      --red: #ef4444;
+      --purple: #7c3aed;
+    }
+    [data-theme="dark"] {
+      --bg: #0b1220;
+      --bg-elev: #0f172a;
+      --text: #e5e7eb;
+      --muted: #94a3b8;
+      --border: #1f2937;
+      --shadow: 0 12px 28px rgba(0,0,0,0.45);
+      --code-bg: #0b1220;
+      --code-fg: #f8fafc;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.55;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
+
+    /* Header / Nav */
+    header.site-header {
+      position: sticky; top: 0; z-index: 50;
+      backdrop-filter: blur(10px);
+      background: color-mix(in srgb, var(--bg-elev) 84%, transparent);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav {
+      max-width: 1280px; margin: 0 auto; padding: 10px 60px 10px 60px; display: flex; align-items: center; gap: 16px; position: relative;
+    }
+    .brand { font-weight: 800; letter-spacing: -0.02em; display: flex; align-items: center; gap: 10px; }
+    .brand .dot { width: 10px; height: 10px; border-radius: 50%; background: linear-gradient(135deg, var(--color-primary), var(--color-secondary)); box-shadow: 0 0 0 3px rgba(37,99,235,0.15); }
+    .brand span { font-size: 16px; }
+  /* Force a single horizontal row for nav items; allow horizontal scrolling on small screens */
+  nav.menu { display: flex; flex-wrap: nowrap; gap: 10px; margin-left: auto; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  nav.menu a { padding: 8px 12px; border-radius: 8px; color: var(--muted); font-weight: 600; white-space: nowrap; }
+  nav.menu::-webkit-scrollbar { height: 8px; }
+  nav.menu::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.06); border-radius: 999px; }
+    nav.menu a:hover, nav.menu a:focus { color: var(--text); background: var(--border); outline: none; box-shadow: var(--focus); }
+    /* Small circular theme toggle placed at top-left of the header */
+    .theme-toggle { 
+      border: 1px solid var(--border); 
+      background: var(--bg-elev); 
+      color: var(--muted); 
+      padding: 8px; 
+      border-radius: 999px; 
+      cursor: pointer; 
+      font-weight: 600; 
+      width: 44px; 
+      height: 44px; 
+      display: inline-flex; 
+      align-items: center; 
+      justify-content: center; 
+      position: absolute; 
+      left: 12px; 
+      top: 50%; 
+      transform: translateY(-50%);
+      font-size: 20px;
+    }
+    .theme-toggle:hover { color: var(--text); border-color: var(--muted); transform: translateY(-50%) scale(1.05); }
+
+    /* Hero */
+    .hero { max-width: 1280px; margin: 24px auto; padding: 24px 16px; display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 24px; align-items: center; }
+    .hero h1 { font-size: clamp(24px, 4vw, 42px); line-height: 1.1; margin: 0 0 8px; }
+    .hero p.lead { color: var(--muted); font-size: 18px; margin: 0 0 16px; }
+    .cta { display: inline-flex; align-items: center; gap: 10px; background: linear-gradient(135deg, var(--color-primary), var(--color-secondary)); color: white; padding: 12px 18px; border-radius: 12px; font-weight: 700; box-shadow: var(--shadow); }
+    .cta:hover { filter: brightness(1.05); transform: translateY(-1px); }
+    .hero-card { background: var(--bg-elev); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); position: relative; }
+
+    /* Sections */
+    section { max-width: 1280px; margin: 32px auto; padding: 0 16px; }
+    section h2 { font-size: clamp(20px, 3vw, 30px); margin: 6px 0 12px; }
+    .sub { color: var(--muted); margin: 0 0 8px; font-weight: 600; }
+
+    /* Visualization Playground Layout */
+    .playground {
+      display: grid; grid-template-columns: 320px 1fr; gap: 16px; align-items: start;
+    }
+    .panel { background: var(--bg-elev); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); }
+    .panel .panel-header { padding: 12px 14px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+    .panel .panel-body { padding: 12px 14px; }
+  /* Make control sidebar scroll independently to avoid page scroll chaining */
+  #controlsPanel .panel-body { max-height: calc(100vh - 140px); overflow: auto; overscroll-behavior: contain; }
+
+    .controls { display: grid; gap: 12px; }
+    .control-group { border: 1px dashed var(--border); border-radius: var(--radius-sm); padding: 10px; }
+    .control-group h3 { margin: 0 0 8px; font-size: 14px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .row-1 { display: grid; grid-template-columns: 1fr; gap: 8px; }
+    label { font-size: 13px; color: var(--muted); }
+    input, select, button, textarea { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-elev); color: var(--text); }
+    button { cursor: pointer; font-weight: 700; }
+    button.primary { background: var(--color-primary); border-color: var(--color-primary); color: white; }
+    button.secondary { background: var(--color-secondary); border-color: var(--color-secondary); color: white; }
+    button.ghost { background: transparent; }
+    button.warn { background: var(--color-warn); border-color: var(--color-warn); color: #111827; }
+    button.danger { background: var(--danger); border-color: var(--danger); color: white; }
+    button:focus { outline: none; box-shadow: var(--focus); }
+
+    .viz-wrapper { min-height: 420px; display: grid; grid-template-rows: 1fr auto; gap: 10px; }
+    .svg-stage { background: conic-gradient(from 90deg at 50% 50%, rgba(37, 99, 235, 0.05), transparent 40%); border: 1px solid var(--border); border-radius: var(--radius); position: relative; overflow: hidden; }
+    svg { width: 100%; height: 100%; display: block; }
+
+    .legend { display: flex; gap: 10px; flex-wrap: wrap; font-size: 13px; color: var(--muted); }
+    .legend .item { display: inline-flex; align-items: center; gap: 6px; padding: 6px 8px; border: 1px solid var(--border); border-radius: 999px; background: var(--bg-elev); }
+    .dot { width: 10px; height: 10px; border-radius: 50%; }
+
+    /* Console */
+    .console { background: var(--bg-elev); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); }
+    .console .panel-header { position: sticky; top: 50px; background: var(--bg-elev); z-index: 2; }
+    .log { max-height: 220px; overflow: auto; font-family: "Fira Code", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; background: var(--code-bg); color: var(--code-fg); padding: 10px; border-bottom-left-radius: var(--radius); border-bottom-right-radius: var(--radius); }
+    .log .line { padding: 4px 0; border-bottom: 1px dashed rgba(255,255,255,0.06); }
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 8px 10px; color: var(--muted); font-size: 13px; }
+
+    /* Accordions */
+    details { border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg-elev); padding: 10px; }
+    details + details { margin-top: 10px; }
+    details[open] { box-shadow: var(--shadow); }
+    summary { cursor: pointer; font-weight: 700; }
+
+    /* Tables */
+    table { width: 100%; border-collapse: collapse; }
+    th, td { border-bottom: 1px solid var(--border); padding: 10px; text-align: left; }
+    th { position: sticky; top: 0; background: var(--bg-elev); z-index: 1; cursor: pointer; }
+    .chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 8px; border-radius: 999px; font-size: 12px; font-weight: 700; }
+    .chip.green { background: #dcfce7; color: #14532d; }
+    .chip.yellow { background: #fef9c3; color: #713f12; }
+    .chip.red { background: #fee2e2; color: #7f1d1d; }
+
+    /* Floating / utility */
+    .back-to-top { position: fixed; right: 16px; bottom: 16px; padding: 10px 12px; border-radius: 999px; border: 1px solid var(--border); background: var(--bg-elev); box-shadow: var(--shadow); }
+    .progress { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, var(--color-primary), var(--color-secondary)); width: 0%; z-index: 60; }
+
+    /* Animations */
+    .fade-in { animation: fadeIn .6s ease both; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+    .pulse { animation: pulse 1s ease-in-out 1; }
+    @keyframes pulse { 0% { transform: scale(0.8); } 50% { transform: scale(1.08); } 100% { transform: scale(1); } }
+
+    /* Responsive */
+    @media (max-width: 980px) {
+      .hero { grid-template-columns: 1fr; }
+      .playground { grid-template-columns: 1fr; }
+      .stats { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <div class="progress" id="scrollProgress" aria-hidden="true"></div>
+  <header class="site-header" role="banner" aria-label="Site header">
+    <div class="nav">
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">🌗</button>
+      <div class="brand" aria-label="Brand">
+        <span class="dot" aria-hidden="true"></span>
+        <span>Circular Linked List - Complete Guide & Visualization</span>
+      </div>
+      <nav class="menu" aria-label="Primary">
+        <a href="#intro">Introduction</a>
+        <a href="#types">Types</a>
+        <a href="#node-structure">Node Structure</a>
+        <a href="#advantages">Advantages</a>
+        <a href="#playground">Visualization</a>
+        <a href="#applications">Applications</a>
+        <a href="#complexity">Complexity</a>
+        <a href="#comparison">Comparison</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" aria-label="Hero">
+      <div>
+        <h1>Master Circular Linked Lists with Interactive Visualizations</h1>
+        <p class="lead">From fundamentals to advanced algorithms like Josephus, explore, run, and visualize all 60+ operations with smooth animations.</p>
+        <a class="cta" href="#playground" role="button" aria-label="Start Exploring">Start Exploring ➜</a>
+      </div>
+      <div class="hero-card" aria-hidden="true">
+        <svg id="heroSvg" viewBox="0 0 600 400" role="img" aria-label="Animated circular linked list diagram">
+          <defs>
+            <filter id="glow"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          </defs>
+          <g id="heroRing" transform="translate(300,200)">
+          </g>
+        </svg>
+      </div>
+    </section>
+
+    <section id="intro" aria-labelledby="intro-title">
+      <h2 id="intro-title">Introduction</h2>
+      <p class="sub">Definition and core intuition</p>
+      <p>A circular linked list is a linked list where the last node points back to the first node, forming a circle. There is no terminal null pointer in the circular chain. The structure enables efficient round-robin traversal and operations that wrap around.</p>
+      <p>Important properties:
+      <ul>
+        <li>There is no natural beginning or end — you typically keep a <code>head</code> (or <code>tail</code>) reference to mark a start point.</li>
+        <li>Traversal must be bounded (for example, by node count) or terminated when you return to <code>head</code> to avoid infinite loops.</li>
+        <li>Doubly circular lists have both <code>next</code> and <code>prev</code> pointers, enabling O(1) deletion from the end when tail is tracked.</li>
+      </ul>
+      </p>
+      <p>Common uses include implementing round-robin schedulers, cyclic buffers, and any scenario requiring wrap-around traversal. Time/space trade-offs are similar to linked lists: O(1) for localized insert/delete with tail/head references and O(n) for searches or indexed access. We'll demonstrate these operations interactively in the playground.</p>
+      <div class="panel" style="margin-top:12px;">
+        <div class="panel-body">
+          <div class="legend" aria-label="Legend">
+            <span class="item"><span class="dot" style="background:#22c55e"></span> Head</span>
+            <span class="item"><span class="dot" style="background:#2563eb"></span> Normal</span>
+            <span class="item"><span class="dot" style="background:#f59e0b"></span> Current</span>
+            <span class="item"><span class="dot" style="background:#ef4444"></span> Deleting</span>
+          </div>
+        </div>
+      </div>
+      <div class="row" style="margin-top:14px;">
+        <div class="hero-card">
+          <strong>How it connects</strong>
+          <p>In a circular list, the last node's <code>next</code> (and <code>prev</code> in doubly) links back to the head node. This forms a loop.</p>
+          <div style="height:220px" id="introSvgWrap">
+            <svg id="introSvg" viewBox="0 0 480 220" aria-label="Diagram showing last node points to first"></svg>
+          </div>
+        </div>
+        <div class="hero-card">
+          <strong>Comparison: Singly vs Circular</strong>
+          <p>Singly lists end with <code>null</code>. Circular lists end by returning to <code>head</code>. Traversals can run in cycles.</p>
+          <ul>
+            <li>Wrap-around traversal without checks</li>
+            <li>Good for round-robin scheduling</li>
+            <li>Requires careful termination conditions</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="types" aria-labelledby="types-title">
+      <h2 id="types-title">Types of Circular Linked Lists</h2>
+      <div class="row">
+        <div class="panel">
+          <div class="panel-header"><strong>Circular Singly Linked List</strong></div>
+          <div class="panel-body">
+            <p>Each node stores <code>data</code> and a single pointer <code>next</code>. The last node's <code>next</code> points to <code>head</code>, creating a closed loop. This makes wrap-around traversals natural and efficient for cyclic tasks.</p>
+            <p><strong>Key properties & uses:</strong></p>
+            <ul>
+              <li>O(1) insertion at head or tail when <code>tail</code> is tracked.</li>
+              <li>Traversal must detect when it returns to <code>head</code> to avoid infinite loops.</li>
+              <li>Ideal for round-robin scheduling, circular buffers, and repeating playlists.</li>
+            </ul>
+            <p><strong>Example:</strong> To insert at end, link the new node to <code>head</code> and update <code>tail</code> to the new node so the circle remains intact.</p>
+            <div id="typesSingly" style="height:240px; margin-top:12px;">
+              <svg viewBox="0 0 480 220" style="width:100%; height:100%;"></svg>
+            </div>
+            <p style="font-size:13px; color:var(--muted); margin-top:8px; font-style:italic;">Diagram: Nodes laid out in a ring. Arrows point to the next node; the last node points back to the first, completing the circular structure.</p>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-header"><strong>Circular Doubly Linked List</strong></div>
+          <div class="panel-body">
+            <p>Each node stores <code>data</code>, <code>prev</code>, and <code>next</code>. The last node's <code>next</code> points to <code>head</code> and <code>head.prev</code> points back to the last node, allowing bidirectional traversal.</p>
+            <p><strong>When to use doubly circular lists:</strong></p>
+            <ul>
+              <li>When you need efficient backward traversal or O(1) deletion of the tail node.</li>
+              <li>Useful in undo-redo buffers, music players (previous/next), and deque-like circular structures.</li>
+              <li>Memory overhead is higher due to the extra <code>prev</code> pointer per node.</li>
+            </ul>
+            <p style="margin-bottom:8px;">Visual note: Each arrow in the diagram represents a pointer. Forward and backward links form two concentric directions around the ring.</p>
+            <div id="typesDoubly" style="height:240px; margin-top:12px;">
+              <svg viewBox="0 0 480 220" style="width:100%; height:100%;"></svg>
+            </div>
+            <p style="font-size:13px; color:var(--muted); margin-top:8px; font-style:italic;">Diagram: Dual arrows show <code>next</code> and <code>prev</code> links. This enables constant-time removal when the node reference is known.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="node-structure" aria-labelledby="node-structure-title">
+      <h2 id="node-structure-title">Node Structure</h2>
+      <div class="row">
+        <div class="panel">
+          <div class="panel-body">
+            <h3>C++ Node Structure</h3>
+            <pre class="log" aria-label="C++ node code"><code>// Singly
+struct NodeSingly {
+  int data;
+  NodeSingly* next;
+  NodeSingly(int v): data(v), next(nullptr) {}
+};
+
+// Doubly
+struct NodeDoubly {
+  int data;
+  NodeDoubly* next;
+  NodeDoubly* prev;
+  NodeDoubly(int v): data(v), next(nullptr), prev(nullptr) {}
+};</code></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="advantages" aria-labelledby="advantages-title">
+      <h2 id="advantages-title">Advantages & Disadvantages</h2>
+      <div class="row">
+        <div class="panel" aria-label="Advantages">
+          <div class="panel-header"><strong>Advantages</strong></div>
+          <div class="panel-body">
+            <ul>
+              <li>Efficient round-robin traversal and scheduling</li>
+              <li>Easy to insert at beginning/end when tail is tracked</li>
+              <li>No need to check for null during traversal</li>
+              <li>Good for cyclic buffers and repeatable playlists</li>
+            </ul>
+          </div>
+        </div>
+        <div class="panel" aria-label="Disadvantages">
+          <div class="panel-header"><strong>Disadvantages</strong></div>
+          <div class="panel-body">
+            <ul>
+              <li>Risk of infinite loops if termination not handled</li>
+              <li>More pointer updates and edge cases</li>
+              <li>Doubly variant uses more memory</li>
+              <li>Complex deletion for single-node lists</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Operations Theory removed per request (moved into inline docs / console snippets) -->
+
+    <section id="playground" aria-labelledby="playground-title">
+      <h2 id="playground-title">Visualization Playground</h2>
+      <p class="sub">Create, manipulate, and visualize circular linked lists with smooth animations.</p>
+      <div class="playground">
+        <aside class="panel" aria-label="Controls" id="controlsPanel">
+          <div class="panel-header"><strong>Control Panel</strong></div>
+          <div class="panel-body controls">
+            <div class="control-group" aria-labelledby="cg-create-title">
+              <h3 id="cg-create-title">1. List Creation</h3>
+              <div class="row">
+                <div>
+                  <label for="listSize">Enter list size</label>
+                  <input id="listSize" type="number" min="0" placeholder="e.g., 5" />
+                </div>
+                <div>
+                  <label for="listValues">Comma-separated values</label>
+                  <input id="listValues" type="text" placeholder="e.g., 3,1,4,1,5" />
+                </div>
+              </div>
+              <div class="row">
+                <div>
+                  <label for="listType">Choose type</label>
+                  <select id="listType">
+                    <option value="singly">Singly Circular</option>
+                    <option value="doubly">Doubly Circular</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="animationSpeed">Animation speed</label>
+                  <select id="animationSpeed">
+                    <option value="slow">Slow</option>
+                    <option value="medium" selected>Medium</option>
+                    <option value="fast">Fast</option>
+                  </select>
+                </div>
+              </div>
+              <div class="row">
+                <button id="btnCreateList" class="primary">Create List</button>
+                <button id="btnCreateRandom" class="secondary">Create Random</button>
+              </div>
+              <div class="row">
+                <button id="btnCreateEmpty" class="ghost">Create Empty</button>
+                <button id="btnCreateSingle" class="ghost">Create Single Node</button>
+              </div>
+            </div>
+
+            <div class="control-group" aria-labelledby="cg-insert-title">
+              <h3 id="cg-insert-title">2. Insertion</h3>
+              <div class="row">
+                <div>
+                  <label for="insertType">Type</label>
+                  <select id="insertType">
+                    <option value="beginning">At beginning</option>
+                    <option value="end">At end</option>
+                    <option value="position">At position</option>
+                    <option value="after">After value</option>
+                    <option value="before">Before value</option>
+                    <option value="sorted">Sorted insert</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="insertValue">Value</label>
+                  <input id="insertValue" type="text" placeholder="value" />
+                </div>
+              </div>
+              <div class="row">
+                <div>
+                  <label for="insertPosition">Position / Target Value</label>
+                  <input id="insertPosition" type="text" placeholder="index or target" />
+                </div>
+                <div>
+                  <label>&nbsp;</label>
+                  <button id="btnInsert" class="primary">Insert</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="control-group" aria-labelledby="cg-delete-title">
+              <h3 id="cg-delete-title">3. Deletion</h3>
+              <div class="row">
+                <div>
+                  <label for="deleteType">Type</label>
+                  <select id="deleteType">
+                    <option value="beginning">From beginning</option>
+                    <option value="end">From end</option>
+                    <option value="position">At position</option>
+                    <option value="byvalue">By value</option>
+                    <option value="all">All occurrences</option>
+                    <option value="alternate">Delete alternate</option>
+                    <option value="entire">Delete entire list</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="deleteValue">Value / Position</label>
+                  <input id="deleteValue" type="text" placeholder="value or index" />
+                </div>
+              </div>
+              <div class="row">
+                <div></div>
+                <div>
+                  <button id="btnDelete" class="danger">Delete</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="control-group" aria-labelledby="cg-search-title">
+              <h3 id="cg-search-title">4. Search</h3>
+              <div class="row">
+                <div>
+                  <label for="searchType">Type</label>
+                  <select id="searchType">
+                    <option value="linear">Linear search</option>
+                    <option value="bypos">Value at position</option>
+                    <option value="position">Position of value</option>
+                    <option value="exists">Exists?</option>
+                    <option value="nth">Find nth node</option>
+                    <option value="count">Count occurrences</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="searchValue">Value / Position</label>
+                  <input id="searchValue" type="text" placeholder="value or index" />
+                </div>
+              </div>
+              <div class="row">
+                <div></div>
+                <div>
+                  <button id="btnSearch" class="primary">Search</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="control-group" aria-labelledby="cg-traverse-title">
+              <h3 id="cg-traverse-title">5. Traversal</h3>
+              <div class="row">
+                <button id="btnTraverseForward">Traverse Forward</button>
+                <button id="btnTraverseBackward">Traverse Backward</button>
+              </div>
+              <div class="row">
+                <div>
+                  <label for="traverseCycles">Number of cycles</label>
+                  <input id="traverseCycles" type="number" min="1" value="1" />
+                </div>
+                <div>
+                  <label>&nbsp;</label>
+                  <button id="btnStartTraversal" class="primary">Start Traversal</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="control-group" aria-labelledby="cg-utility-title">
+              <h3 id="cg-utility-title">6. Utilities</h3>
+              <div class="row">
+                <button id="btnCount">Count Nodes</button>
+                <button id="btnMiddle">Find Middle</button>
+              </div>
+              <div class="row">
+                <button id="btnReverse">Reverse List</button>
+                <button id="btnCheckCircular">Check Circular</button>
+              </div>
+              <div class="row">
+                <button id="btnSplit">Split into Halves</button>
+                <button id="btnClone">Clone List</button>
+              </div>
+              <!-- Sorting controls removed per request -->
+            </div>
+
+            <!-- Advanced controls removed per request -->
+
+            <div class="control-group" aria-labelledby="cg-display-title">
+              <h3 id="cg-display-title">8. Display & Mode</h3>
+              <div class="row">
+                <button id="btnDisplay">Display List</button>
+                <button id="btnClearConsole" class="ghost">Clear Console</button>
+              </div>
+              <div class="row">
+                <label><input type="checkbox" id="toggleStepByStep" /> Show Step-by-Step</label>
+                <label><input type="checkbox" id="toggleShowCode" checked /> Show Code</label>
+              </div>
+              <div class="row">
+                <label><input type="checkbox" id="toggleAutoplay" checked /> Auto-play animations</label>
+                <!-- Export diagram removed per request -->
+              </div>
+              <!-- Save/Load state removed per request -->
+            </div>
+          </div>
+        </aside>
+
+        <div class="viz-wrapper">
+          <div class="panel svg-stage" aria-live="polite">
+            <div class="panel-header">
+              <strong>Canvas</strong>
+              <div>
+                <button id="btnPlay" class="ghost">▶ Play</button>
+                <button id="btnPause" class="ghost">⏸ Pause</button>
+                <button id="btnStep" class="ghost">⏭ Step</button>
+              </div>
+            </div>
+            <div class="panel-body" style="height: 520px;">
+              <svg id="viz" viewBox="0 0 900 520" aria-label="Circular linked list visualization"></svg>
+            </div>
+            <div class="panel-body">
+              <div class="legend">
+                <span class="item"><span class="dot" style="background:#22c55e"></span> Head</span>
+                <span class="item"><span class="dot" style="background:#2563eb"></span> Node</span>
+                <span class="item"><span class="dot" style="background:#f59e0b"></span> Current</span>
+                <span class="item"><span class="dot" style="background:#ef4444"></span> Deleting</span>
+                <span class="item"><span class="dot" style="background:#a3e635"></span> New</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="console" aria-label="Console and Output">
+            <div class="panel-header">
+              <strong>Console</strong>
+              <div class="stats">
+                <div>Nodes: <span id="statNodes">0</span></div>
+                <div>Time: <span id="statTime">0 ms</span></div>
+                <div>Comparisons: <span id="statComparisons">0</span></div>
+                <div>Complexity: <span id="statComplexity">-</span></div>
+              </div>
+            </div>
+            <div id="log" class="panel-body log" aria-live="polite"></div>
+            <div class="panel-body">
+              <details open>
+                <summary>Current Operation Code</summary>
+                <pre class="log" id="codeView"></pre>
+              </details>
+              <details>
+                <summary>Current List State (Array)</summary>
+                <pre class="log" id="arrayView"></pre>
+              </details>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="applications" aria-labelledby="applications-title">
+      <h2 id="applications-title">Applications & Use Cases</h2>
+      <div class="row" id="appsGrid"></div>
+    </section>
+
+    <section id="complexity" aria-labelledby="complexity-title">
+      <h2 id="complexity-title">Time & Space Complexity</h2>
+      <div class="panel">
+        <div class="panel-body" style="overflow:auto; max-height:360px;">
+          <table id="complexityTable" aria-label="Complexity table">
+            <thead>
+              <tr>
+                <th data-key="op">Operation</th>
+                <th data-key="time">Time</th>
+                <th data-key="space">Space</th>
+                <th data-key="desc">Notes</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="panel" style="margin-top:12px;">
+        <div class="panel-body" style="height: 260px;" id="complexityGraph" aria-label="Complexity graph"></div>
+      </div>
+    </section>
+
+    <section id="comparison" aria-labelledby="comparison-title">
+      <h2 id="comparison-title">Comparison with Other Data Structures</h2>
+      <div class="panel">
+        <div class="panel-body">
+          <div class="row">
+            <div>
+              <label for="compareToggle">Compare against</label>
+              <select id="compareToggle">
+                <option value="singly">Singly</option>
+                <option value="doubly">Doubly</option>
+                <option value="array">Array</option>
+                <option value="queue">Queue</option>
+              </select>
+            </div>
+          </div>
+          <div id="comparisonTableWrap" style="overflow:auto; margin-top: 10px;"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Common Errors & Debugging, Edge Cases, Code Implementation, and Practice Problems sections removed per user request -->
+  </main>
+
+  <button class="back-to-top" id="backToTop" aria-label="Back to top">↑</button>
+
+  <script>
+    // ---------------------------
+    // Utilities & UI helpers
+    // ---------------------------
+    const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+    const $ = (sel, root=document) => root.querySelector(sel);
+    const wait = (ms) => new Promise(r => setTimeout(r, ms));
+
+    const Theme = {
+      init() {
+        const key = 'cll-theme';
+        const saved = localStorage.getItem(key);
+        if (saved) {
+          document.documentElement.setAttribute('data-theme', saved);
+        } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+        $('#themeToggle').addEventListener('click', () => {
+          const cur = document.documentElement.getAttribute('data-theme');
+          const next = cur === 'dark' ? 'light' : 'dark';
+          document.documentElement.setAttribute('data-theme', next);
+          localStorage.setItem(key, next);
+        });
+      }
+    };
+
+    function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
+
+    // Toasts
+    const Toast = (() => {
+      const root = document.createElement('div');
+      root.style.position = 'fixed';
+      root.style.right = '12px';
+      root.style.top = '60px';
+      root.style.zIndex = '100';
+      document.body.appendChild(root);
+      return {
+        show(msg, type='info') {
+          const el = document.createElement('div');
+          el.textContent = msg;
+          el.className = 'fade-in';
+          el.style.margin = '6px 0';
+          el.style.padding = '10px 12px';
+          el.style.border = '1px solid var(--border)';
+          el.style.borderRadius = '12px';
+          el.style.boxShadow = 'var(--shadow)';
+          el.style.background = 'var(--bg-elev)';
+          el.style.color = 'var(--text)';
+          if (type==='error') el.style.borderColor = 'var(--danger)';
+          root.appendChild(el);
+          setTimeout(() => el.remove(), 2800);
+        }
+      };
+    })();
+
+    // Scroll progress & back-to-top
+    (function initScroll() {
+      const bar = $('#scrollProgress');
+      window.addEventListener('scroll', () => {
+        const t = document.documentElement.scrollTop || document.body.scrollTop;
+        const h = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const pct = (t / h) * 100;
+        bar.style.width = pct + '%';
+      });
+      $('#backToTop').addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth'}));
+    })();
+
+    Theme.init();
+
+    // ---------------------------
+    // Data Structures
+    // ---------------------------
+    class NodeSingly { constructor(data){ this.data=data; this.next=null; this._id=NodeSingly._gid++; } }
+    NodeSingly._gid = 1;
+    class NodeDoubly { constructor(data){ this.data=data; this.next=null; this.prev=null; this._id=NodeDoubly._gid++; } }
+    NodeDoubly._gid = 1;
+
+    class CircularLinkedList {
+      constructor(type='singly') {
+        this.type = type; // 'singly' | 'doubly'
+        this.head = null;
+        this.tail = null;
+        this._size = 0;
+        this.comparisons = 0;
+      }
+      isDoubly(){ return this.type === 'doubly'; }
+      isEmpty(){ return this._size === 0; }
+      size(){ return this._size; }
+      getHead(){ return this.head; }
+      getTail(){ return this.tail; }
+      setType(type){ this.type = type; if(!this.isEmpty()) this.ensureCircularity(); }
+
+      node(data){ return this.isDoubly()? new NodeDoubly(data) : new NodeSingly(data); }
+
+      clear(){ this.head=this.tail=null; this._size=0; }
+
+      ensureCircularity(){
+        if (!this.head) return;
+        if (this.tail) this.tail.next = this.head;
+        if (this.isDoubly() && this.head && this.tail){
+          this.head.prev = this.tail;
+        }
+      }
+
+      // Creation
+      createEmpty(){ this.clear(); return this; }
+      createSingle(data){ this.clear(); const n=this.node(data); this.head=this.tail=n; this._size=1; this.ensureCircularity(); return this; }
+      createFromArray(arr){ this.clear(); for(const v of arr) this.insertAtEnd(v); return this; }
+
+      // Insertions (6)
+      insertAtBeginning(value){ const n=this.node(value);
+        if(this.isEmpty()){ this.head=this.tail=n; }
+        else {
+          n.next=this.head;
+          if(this.isDoubly()){ n.prev=this.tail; this.head.prev=n; this.tail.next=n; }
+          this.head=n;
+        }
+        this._size++; this.ensureCircularity(); return n;
+      }
+      insertAtEnd(value){ const n=this.node(value);
+        if(this.isEmpty()){ this.head=this.tail=n; }
+        else {
+          this.tail.next=n;
+          if(this.isDoubly()){ n.prev=this.tail; }
+          this.tail=n;
+        }
+        this._size++; this.ensureCircularity(); return n;
+      }
+      insertAtPosition(value, pos){
+        pos = Math.max(0, Math.min(pos, this._size));
+        if(pos===0) return this.insertAtBeginning(value);
+        if(pos===this._size) return this.insertAtEnd(value);
+        let prev=this.head; for(let i=0;i<pos-1;i++){ prev=prev.next; }
+        const n=this.node(value); n.next=prev.next; prev.next=n; if(this.isDoubly()){ n.prev=prev; n.next.prev=n; }
+        this._size++; this.ensureCircularity(); return n;
+      }
+      insertAfterValue(target, value){ if(this.isEmpty()) return null; let cur=this.head; do{ if(cur.data==target){
+            const n=this.node(value); n.next=cur.next; cur.next=n; if(this.isDoubly()){ n.prev=cur; n.next.prev=n; }
+            if(cur===this.tail) this.tail=n; this._size++; this.ensureCircularity(); return n; }
+          cur=cur.next; }while(cur!==this.head); return null; }
+      insertBeforeValue(target, value){ if(this.isEmpty()) return null; if(this.head.data==target) return this.insertAtBeginning(value); let prev=this.head; let cur=this.head.next; while(cur!==this.head){ if(cur.data==target){ const n=this.node(value); n.next=cur; prev.next=n; if(this.isDoubly()){ n.prev=prev; cur.prev=n; } this._size++; this.ensureCircularity(); return n; } prev=cur; cur=cur.next; } return null; }
+      sortedInsert(value){ if(this.isEmpty()) return this.insertAtBeginning(value); if(this.head.data>=value) return this.insertAtBeginning(value); let cur=this.head; while(cur.next!==this.head && cur.next.data<value){ cur=cur.next; } const n=this.node(value); n.next=cur.next; cur.next=n; if(this.isDoubly()){ n.prev=cur; n.next.prev=n; } if(cur===this.tail) this.tail=n; this._size++; this.ensureCircularity(); return n; }
+
+      // Deletions (7)
+      deleteFromBeginning(){ if(this.isEmpty()) return null; const del=this.head; if(this._size===1){ this.clear(); return del; }
+        this.head=this.head.next; if(this.isDoubly()){ this.head.prev=this.tail; }
+        this._size--; this.ensureCircularity(); return del; }
+      deleteFromEnd(){ if(this.isEmpty()) return null; const del=this.tail; if(this._size===1){ this.clear(); return del; }
+        if(this.isDoubly()){ this.tail=this.tail.prev; this.tail.next=this.head; this.head.prev=this.tail; }
+        else { let prev=this.head; while(prev.next!==this.tail) prev=prev.next; this.tail=prev; this.tail.next=this.head; }
+        this._size--; return del; }
+      deleteAtPosition(pos){ if(this.isEmpty()) return null; pos = Math.max(0, Math.min(pos, this._size-1)); if(pos===0) return this.deleteFromBeginning(); if(pos===this._size-1) return this.deleteFromEnd(); let prev=this.head; for(let i=0;i<pos-1;i++) prev=prev.next; const del=prev.next; prev.next=del.next; if(this.isDoubly()){ del.next.prev=prev; } this._size--; this.ensureCircularity(); return del; }
+      deleteByValue(value){ if(this.isEmpty()) return 0; let count=0; while(this.head && this.head.data==value){ this.deleteFromBeginning(); count++; if(this.isEmpty()) return count; }
+        let prev=this.head; let cur=this.head.next; while(cur!==this.head){ if(cur.data==value){ prev.next=cur.next; if(this.isDoubly()){ cur.next.prev=prev; } if(cur===this.tail) this.tail=prev; this._size--; count++; cur=prev.next; } else { prev=cur; cur=cur.next; } } this.ensureCircularity(); return count; }
+      deleteAllOccurrences(value){ return this.deleteByValue(value); }
+      deleteAlternateNodes(){ if(this._size<=1) return 0; let count=0; let cur=this.head; do{ if(cur.next===this.head){ break; } const del=cur.next; cur.next=del.next; if(this.isDoubly()){ del.next.prev=cur; } if(del===this.tail) this.tail=cur; this._size--; count++; cur=cur.next; }while(cur!==this.head && this._size>1); this.ensureCircularity(); return count; }
+      clearAll(){ const n=this._size; this.clear(); return n; }
+
+      // Traversal
+      toArray(limit=Infinity){ const arr=[]; if(this.isEmpty()) return arr; let cur=this.head; let c=0; do{ arr.push(cur.data); cur=cur.next; c++; }while(cur!==this.head && c<limit); return arr; }
+      traverseForward(steps=this._size){ return this.toArray(Math.max(0, steps)); }
+      traverseBackward(steps=this._size){ if(!this.isDoubly()||this.isEmpty()) return []; const arr=[]; let cur=this.tail; let c=0; do{ arr.push(cur.data); cur=cur.prev; c++; }while(cur!==this.tail && c<steps); return arr; }
+      traverseKCycles(k=1){ if(this.isEmpty()) return []; return this.toArray(this._size * k); }
+
+      // Searching (6)
+      linearSearch(value){ if(this.isEmpty()) return -1; let idx=0; let cur=this.head; do{ this.comparisons++; if(cur.data==value) return idx; cur=cur.next; idx++; }while(cur!==this.head); return -1; }
+      valueAtPosition(pos){ if(this.isEmpty()) return undefined; pos = ((pos%this._size)+this._size)%this._size; let cur=this.head; for(let i=0;i<pos;i++) cur=cur.next; return cur.data; }
+      positionOfValue(value){ return this.linearSearch(value); }
+      exists(value){ return this.linearSearch(value)!==-1; }
+      nthNode(n){ if(this.isEmpty()) return null; n = ((n%this._size)+this._size)%this._size; let cur=this.head; for(let i=0;i<n;i++) cur=cur.next; return cur; }
+      countOccurrences(value){ if(this.isEmpty()) return 0; let count=0; let cur=this.head; do{ if(cur.data==value) count++; cur=cur.next; }while(cur!==this.head); return count; }
+
+      // Utilities (11)
+      count(){ return this._size; }
+      findMiddle(){ if(this.isEmpty()) return null; let slow=this.head, fast=this.head; while(fast.next!==this.head && fast.next.next!==this.head){ slow=slow.next; fast=fast.next.next; } return slow; }
+      reverse(){ if(this._size<=1) return this.head; if(this.isDoubly()){ let cur=this.head; do{ const tmp=cur.next; cur.next=cur.prev; cur.prev=tmp; cur=tmp; }while(cur!==this.head); const tmp=this.head; this.head=this.tail; this.tail=tmp; this.ensureCircularity(); return this.head; } else { let prev=this.tail; let cur=this.head; do{ const nxt=cur.next; cur.next=prev; prev=cur; cur=nxt; }while(cur!==this.head); this.tail=this.head; this.head=prev; this.ensureCircularity(); return this.head; } }
+      isCircular(){ if(this.isEmpty()) return false; let cur=this.head.next; while(cur && cur!==this.head) cur=cur.next; return cur===this.head; }
+      splitIntoHalves(){ if(this._size<2) return [this, new CircularLinkedList(this.type)]; let slow=this.head, fast=this.head; while(fast.next!==this.head && fast.next.next!==this.head){ slow=slow.next; fast=fast.next.next; }
+        const head1=this.head, head2=slow.next; const list1=new CircularLinkedList(this.type); const list2=new CircularLinkedList(this.type);
+        // Build list1
+        list1.head=head1; list1.tail=slow; list1._size=0; let cur=head1; do{ list1._size++; cur=cur.next; }while(cur!==head2);
+        list1.ensureCircularity();
+        // Build list2
+        list2.head=head2; list2.tail=this.tail; list2._size=this._size - list1._size; list2.ensureCircularity();
+        return [list1, list2]; }
+      clone(){ const c=new CircularLinkedList(this.type); let cur=this.head; if(!cur) return c; do{ c.insertAtEnd(cur.data); cur=cur.next; }while(cur!==this.head); return c; }
+      sort(algorithm='bubble'){ if(this._size<=1) return; const arr=this.toArray(); if(algorithm==='bubble'){ for(let i=0;i<arr.length-1;i++){ for(let j=0;j<arr.length-1-i;j++){ if(arr[j]>arr[j+1]){ const t=arr[j]; arr[j]=arr[j+1]; arr[j+1]=t; } } } }
+        else if(algorithm==='selection'){ for(let i=0;i<arr.length;i++){ let mi=i; for(let j=i+1;j<arr.length;j++){ if(arr[j]<arr[mi]) mi=j; } const t=arr[i]; arr[i]=arr[mi]; arr[mi]=t; } }
+        else if(algorithm==='merge'){ const mergeSort=(a)=>{ if(a.length<2) return a; const m=Math.floor(a.length/2); const L=mergeSort(a.slice(0,m)); const R=mergeSort(a.slice(m)); const out=[]; let i=0,j=0; while(i<L.length||j<R.length){ if(j>=R.length||(i<L.length&&L[i]<=R[j])) out.push(L[i++]); else out.push(R[j++]); } return out; }; const s=mergeSort(arr); arr.splice(0,arr.length,...s); }
+        this.createFromArray(arr); }
+      swapNodes(x, y){ if(x===y || this._size<2) return false; let prevX=this.tail, curX=this.head; while(curX!==this.head || prevX===this.tail){ if(curX.data===x) break; prevX=curX; curX=curX.next; if(curX===this.head) break; } let prevY=this.tail, curY=this.head; while(curY!==this.head || prevY===this.tail){ if(curY.data===y) break; prevY=curY; curY=curY.next; if(curY===this.head) break; } if(!curX || !curY || curX.data!==x || curY.data!==y) return false; if(curX===curY) return false; // adjust
+        // Swap next links
+        const tmpNext=curX.next; curX.next=curY.next; curY.next=tmpNext; if(this.isDoubly()){ const tmpPrev=curX.prev; curX.prev=curY.prev; curY.prev=tmpPrev; curX.next.prev=curX; curY.next.prev=curY; curX.prev.next=curX; curY.prev.next=curY; } else {
+          // for singly, need to also fix previous nodes
+          let prev=null, cur=this.head; do{ if(cur.next===curX) prev=cur; cur=cur.next; }while(cur!==this.head); if(prev) prev.next=curY; prev=null; cur=this.head; do{ if(cur.next===curY) prev=cur; cur=cur.next; }while(cur!==this.head); if(prev) prev.next=curX; }
+        if(this.head===curX) this.head=curY; else if(this.head===curY) this.head=curX; if(this.tail===curX) this.tail=curY; else if(this.tail===curY) this.tail=curX; this.ensureCircularity(); return true; }
+
+      // Advanced (15)
+      convertToCircular(){ this.ensureCircularity(); return true; }
+      convertToSingly(){ if(this.isEmpty()) return false; if(this.tail) this.tail.next=null; if(this.isDoubly() && this.head) this.head.prev=null; return true; }
+      static mergeTwo(a, b){ const out=new CircularLinkedList(a.type); const arr=[...a.toArray(), ...b.toArray()]; out.createFromArray(arr); return out; }
+      detectAndRemoveLoop(){ // for general list; here ensure circular
+        if(!this.head) return false; let slow=this.head, fast=this.head; do{ slow=slow.next; fast=fast.next?.next ?? this.head; }while(slow && fast && fast!==slow && fast!==this.head);
+        if(fast===slow){ // remove
+          // break at tail
+          let cur=this.head; while(cur.next && cur.next!==this.head) cur=cur.next; this.tail=cur; this.tail.next=this.head; if(this.isDoubly()) this.head.prev=this.tail; return true; }
+        return false; }
+      josephus(k){ // eliminate every k-th node, return survivor
+        if(this._size===0 || k<=0) return null; let cur=this.head, prev=this.tail; while(this._size>1){ for(let i=1;i<k;i++){ prev=cur; cur=cur.next; }
+          // remove cur
+          if(cur===this.head) this.head=cur.next; if(cur===this.tail) this.tail=prev; prev.next=cur.next; if(this.isDoubly()){ cur.next.prev=prev; }
+          this._size--; cur=prev.next; this.ensureCircularity(); }
+        return this.head?.data ?? null; }
+      rotate(k){ if(this.isEmpty()) return; k = ((k%this._size)+this._size)%this._size; for(let i=0;i<k;i++){ this.head=this.head.next; this.tail=this.tail.next; } }
+      exchangeFirstLast(){ if(this._size<2) return false; const h=this.head, t=this.tail; // move head after tail, update references
+        if(this.isDoubly()){
+          const a=h.next, b=t.prev; t.next=h; h.prev=t; h.next=this.head; b.next=t; t.prev=b; this.head=a; this.tail=h; this.ensureCircularity(); return true;
+        } else {
+          let prev=this.head; while(prev.next!==this.tail) prev=prev.next; prev.next=this.head; this.tail.next=this.head.next; this.head.next=this.head; this.head=this.tail; this.tail=prev; this.ensureCircularity(); return true;
+        } }
+      removeDuplicatesSorted(){ if(this._size<=1) return 0; let cur=this.head; let removed=0; do{ while(cur.next!==this.head && cur.data===cur.next.data){ // remove cur.next
+            const del=cur.next; cur.next=del.next; if(this.isDoubly()) del.next.prev=cur; if(del===this.tail) this.tail=cur; this._size--; removed++; }
+          cur=cur.next; }while(cur!==this.head); this.ensureCircularity(); return removed; }
+      removeDuplicatesUnsorted(){ if(this._size<=1) return 0; const seen=new Set(); let cur=this.head, prev=this.tail; let removed=0; do{ if(seen.has(cur.data)){ prev.next=cur.next; if(this.isDoubly()) cur.next.prev=prev; if(cur===this.tail) this.tail=prev; this._size--; removed++; cur=prev.next; } else { seen.add(cur.data); prev=cur; cur=cur.next; } }while(cur!==this.head); this.ensureCircularity(); return removed; }
+      intersectionWith(other){ const set=new Set(other.toArray()); const out=new CircularLinkedList(this.type); let cur=this.head; if(!cur) return out; do{ if(set.has(cur.data)) out.insertAtEnd(cur.data); cur=cur.next; }while(cur!==this.head); return out; }
+      isPalindrome(){ const arr=this.toArray(); for(let i=0,j=arr.length-1;i<j;i++,j--){ if(arr[i]!==arr[j]) return false; } return true; }
+      rearrangeOddEven(){ if(this._size<=2) return; const odd=new CircularLinkedList(this.type), even=new CircularLinkedList(this.type); let i=0, cur=this.head; do{ (i%2===0? even:odd).insertAtEnd(cur.data); i++; cur=cur.next; }while(cur!==this.head); const merged=CircularLinkedList.mergeTwo(even, odd); this.head=merged.head; this.tail=merged.tail; this._size=merged._size; this.ensureCircularity(); }
+      kthFromEnd(k){ if(this.isEmpty()) return null; k = ((k%this._size)+this._size)%this._size; let fast=this.head; for(let i=0;i<k;i++) fast=fast.next; let slow=this.head; while(fast.next!==this.head){ fast=fast.next; slow=slow.next; } return slow; }
+      pairwiseSwap(){ if(this._size<2) return; let cur=this.head; do{ const next=cur.next; const tmp=cur.data; cur.data=next.data; next.data=tmp; cur=next.next; }while(cur!==this.head && cur.next!==this.head); }
+      addTwoNumbers(other){ // digits in nodes, head as first digit (can adapt)
+        const a=this.toArray().reverse(); const b=other.toArray().reverse(); const out=new CircularLinkedList(this.type); let i=0,j=0,carry=0; while(i<a.length||j<b.length||carry){ const sum=(a[i++]||0)+(b[j++]||0)+carry; out.insertAtBeginning(sum%10); carry=Math.floor(sum/10); } return out; }
+    }
+
+    // ---------------------------
+    // Visualization Engine
+    // ---------------------------
+    const Viz = (() => {
+      const svg = $('#viz');
+      const NS = 'http://www.w3.org/2000/svg';
+      let width=900, height=520, cx=width/2, cy=height/2, radius=Math.min(width, height)/2 - 80;
+
+      function resize(){ const r=svg.getBoundingClientRect(); width=r.width; height=r.height; cx=width/2; cy=height/2; radius=Math.min(width,height)/2 - 80; }
+      window.addEventListener('resize', resize);
+
+      function clear(){ while(svg.firstChild) svg.removeChild(svg.firstChild); }
+
+      function drawArrow(x1,y1,x2,y2,color='#64748b'){
+        const path = document.createElementNS(NS,'path');
+        const dx=x2-x1, dy=y2-y1; const mx=(x1+x2)/2, my=(y1+y2)/2; // slight curve
+        const cx1 = x1 + dx*0.25 - dy*0.12; const cy1 = y1 + dy*0.25 + dx*0.12;
+        const cx2 = x1 + dx*0.75 - dy*0.12; const cy2 = y1 + dy*0.75 + dx*0.12;
+        path.setAttribute('d', `M ${x1} ${y1} C ${cx1} ${cy1}, ${cx2} ${cy2}, ${x2} ${y2}`);
+        path.setAttribute('fill','none');
+        path.setAttribute('stroke', color);
+        path.setAttribute('stroke-width','2');
+        path.setAttribute('marker-end','url(#arrowhead)');
+        return path;
+      }
+
+      function markerDefs(){
+        let defs = svg.querySelector('defs'); if(!defs){ defs=document.createElementNS(NS,'defs'); svg.appendChild(defs); }
+        let m=svg.querySelector('#arrowhead'); if(!m){
+          m=document.createElementNS(NS,'marker'); m.setAttribute('id','arrowhead'); m.setAttribute('orient','auto'); m.setAttribute('markerWidth','8'); m.setAttribute('markerHeight','8'); m.setAttribute('refX','0.1'); m.setAttribute('refY','2');
+          const p=document.createElementNS(NS,'path'); p.setAttribute('d','M0,0 V4 L4,2 Z'); p.setAttribute('fill','#64748b');
+          m.appendChild(p); defs.appendChild(m);
+        }
+      }
+
+      function drawList(list, highlight={}){
+        resize(); clear(); markerDefs();
+        const n=list.size(); if(n===0){ return; }
+        const angleStep = (Math.PI*2)/n;
+        const nodes=[];
+        // Compute positions
+        for(let i=0;i<n;i++){
+          const ang = -Math.PI/2 + i*angleStep;
+          const x = cx + radius*Math.cos(ang);
+          const y = cy + radius*Math.sin(ang);
+          nodes.push({x,y});
+        }
+        // Map actual nodes in order
+        let cur=list.head; const order=[]; do{ order.push(cur); cur=cur.next; }while(cur!==list.head);
+        // Draw arrows first
+        for(let i=0;i<n;i++){
+          const j=(i+1)%n; const a=nodes[i], b=nodes[j];
+          const arrow = drawArrow(a.x,a.y,b.x,b.y,'#64748b'); svg.appendChild(arrow);
+        }
+        // For doubly, draw backward arrows lighter
+        if(list.isDoubly()){
+          for(let i=0;i<n;i++){
+            const j=(i-1+n)%n; const a=nodes[i], b=nodes[j];
+            const arrow = drawArrow(a.x,a.y,b.x,b.y,'#94a3b8'); arrow.setAttribute('stroke-dasharray','6 6'); svg.appendChild(arrow);
+          }
+        }
+        // Draw nodes
+        for(let i=0;i<n;i++){
+          const g=document.createElementNS(NS,'g'); g.setAttribute('class','node'); g.setAttribute('transform',`translate(${nodes[i].x},${nodes[i].y})`);
+          const circle=document.createElementNS(NS,'circle'); circle.setAttribute('r','26');
+          const isHead = order[i]===list.head;
+          const isTail = order[i]===list.tail;
+          const isCurrent = highlight.current && highlight.current===order[i];
+          const isNew = highlight.new && highlight.new===order[i];
+          const isDelete = highlight.delete && highlight.delete===order[i];
+          const fill = isDelete? '#ef4444' : isCurrent? '#f59e0b' : isHead? '#22c55e' : isNew? '#a3e635' : '#2563eb';
+          circle.setAttribute('fill', fill);
+          circle.setAttribute('fill-opacity','0.9');
+          circle.setAttribute('stroke', '#0f172a'); circle.setAttribute('stroke-opacity','0.15');
+          g.appendChild(circle);
+          const text=document.createElementNS(NS,'text'); text.setAttribute('text-anchor','middle'); text.setAttribute('dominant-baseline','central'); text.setAttribute('fill','white'); text.setAttribute('font-weight','700'); text.textContent = String(order[i].data);
+          g.appendChild(text);
+          const idx=document.createElementNS(NS,'text'); idx.setAttribute('text-anchor','middle'); idx.setAttribute('y','40'); idx.setAttribute('fill','var(--muted)'); idx.setAttribute('font-size','10'); idx.textContent = `#${i}` + (isHead? ' (H)':'' ) + (isTail? ' (T)':'' );
+          g.appendChild(idx);
+          svg.appendChild(g);
+        }
+      }
+
+      return { drawList };
+    })();
+
+    // ---------------------------
+    // Animation Controller
+    // ---------------------------
+    const Animator = (() => {
+      let queue = [];
+      let playing = true;
+      let speed = 'medium';
+
+      function ms(){ return speed==='slow'? 700 : speed==='fast'? 250 : 450; }
+      function setSpeed(s){ speed=s; }
+      async function run(){ if(!playing) return; if(queue.length===0) return; const step=queue.shift(); await step(); if(playing) setTimeout(run, 0); }
+      function play(){ playing=true; run(); }
+      function pause(){ playing=false; }
+      async function step(){ if(queue.length===0) return; const s=queue.shift(); await s(); }
+      function push(fn){ queue.push(fn); if(playing) run(); }
+      function clear(){ queue=[]; }
+      return { setSpeed, play, pause, step, push, clear };
+    })();
+
+    // ---------------------------
+    // Logging & Code display
+    // ---------------------------
+    const Log = (() => {
+      const el = $('#log');
+      const statNodes = $('#statNodes');
+      const statTime = $('#statTime');
+      const statCmp = $('#statComparisons');
+      const statCx = $('#statComplexity');
+      const codeView = $('#codeView');
+      const arrayView = $('#arrayView');
+      function line(text){ const d=document.createElement('div'); d.className='line'; d.textContent=text; el.appendChild(d); el.scrollTop=el.scrollHeight; }
+      function clear(){ el.innerHTML=''; }
+      function setStats({nodes,time,comparisons,complexity}){
+        if(nodes!=null) statNodes.textContent=nodes;
+        if(time!=null) statTime.textContent=time+' ms';
+        if(comparisons!=null) statCmp.textContent=comparisons;
+        if(complexity!=null) statCx.textContent=complexity;
+      }
+      function showCode(src){ if($('#toggleShowCode').checked){ codeView.textContent=src; } }
+      function showArray(arr){ arrayView.textContent=JSON.stringify(arr); }
+      return { line, clear, setStats, showCode, showArray };
+    })();
+
+    const Codes = {
+      // Creation
+      createList: `// C++: Create circular list from array
+void createFromArray(NodeSingly*& head, NodeSingly*& tail, int arr[], int n) {
+  if (n == 0) return;
+  head = new NodeSingly(arr[0]);
+  tail = head;
+  for (int i = 1; i < n; i++) {
+    tail->next = new NodeSingly(arr[i]);
+    tail = tail->next;
+  }
+  tail->next = head; // Make it circular
+}`,
+      insertAtBeginning: `// C++: Insert at beginning (O(1))
+void insertAtBeginning(NodeSingly*& head, NodeSingly*& tail, int value) {
+  NodeSingly* n = new NodeSingly(value);
+  if (!head) { head = tail = n; tail->next = head; return; }
+  n->next = head; head = n; tail->next = head;
+}`,
+      insertAtEnd: `// C++: Insert at end (O(1) with tail)
+void insertAtEnd(NodeSingly*& head, NodeSingly*& tail, int value) {
+  NodeSingly* n = new NodeSingly(value);
+  if (!head) { head = tail = n; tail->next = head; return; }
+  tail->next = n; tail = n; tail->next = head;
+}`,
+      insertAtPosition: `// C++: Insert at position (O(n))
+void insertAtPosition(NodeSingly*& head, NodeSingly*& tail, int value, int pos) {
+  if (pos == 0) { insertAtBeginning(head, tail, value); return; }
+  NodeSingly* cur = head;
+  for (int i = 0; i < pos - 1 && cur->next != head; i++) cur = cur->next;
+  NodeSingly* n = new NodeSingly(value);
+  n->next = cur->next; cur->next = n;
+  if (cur == tail) tail = n;
+}`,
+      insertAfter: `// C++: Insert after a value (O(n))
+void insertAfterValue(NodeSingly*& head, NodeSingly*& tail, int target, int value) {
+  if (!head) return;
+  NodeSingly* cur = head;
+  do {
+    if (cur->data == target) {
+      NodeSingly* n = new NodeSingly(value);
+      n->next = cur->next; cur->next = n;
+      if (cur == tail) tail = n;
+      return;
+    }
+    cur = cur->next;
+  } while (cur != head);
+}`,
+      insertBefore: `// C++: Insert before a value (O(n))
+void insertBeforeValue(NodeSingly*& head, NodeSingly*& tail, int target, int value) {
+  if (!head) return;
+  if (head->data == target) { insertAtBeginning(head, tail, value); return; }
+  NodeSingly* cur = head;
+  while (cur->next != head && cur->next->data != target) cur = cur->next;
+  if (cur->next->data == target) {
+    NodeSingly* n = new NodeSingly(value);
+    n->next = cur->next; cur->next = n;
+  }
+}`,
+      sortedInsert: `// C++: Sorted insert (O(n))
+void sortedInsert(NodeSingly*& head, NodeSingly*& tail, int value) {
+  NodeSingly* n = new NodeSingly(value);
+  if (!head || head->data >= value) {
+    n->next = head ? head : n;
+    if (!head) tail = n; else tail->next = n;
+    head = n; return;
+  }
+  NodeSingly* cur = head;
+  while (cur->next != head && cur->next->data < value) cur = cur->next;
+  n->next = cur->next; cur->next = n;
+  if (cur == tail) tail = n;
+}`,
+      deleteFromBeginning: `// C++: Delete from beginning (O(1))
+int deleteFromBeginning(NodeSingly*& head, NodeSingly*& tail) {
+  if (!head) return -1;
+  int val = head->data;
+  if (head == tail) { delete head; head = tail = nullptr; return val; }
+  NodeSingly* tmp = head; head = head->next;
+  tail->next = head; delete tmp; return val;
+}`,
+      deleteFromEnd: `// C++: Delete from end (O(n) for singly)
+int deleteFromEnd(NodeSingly*& head, NodeSingly*& tail) {
+  if (!head) return -1;
+  int val = tail->data;
+  if (head == tail) { delete head; head = tail = nullptr; return val; }
+  NodeSingly* cur = head;
+  while (cur->next != tail) cur = cur->next;
+  delete tail; tail = cur; tail->next = head; return val;
+}`,
+      deleteAtPosition: `// C++: Delete at position (O(n))
+int deleteAtPosition(NodeSingly*& head, NodeSingly*& tail, int pos) {
+  if (!head) return -1;
+  if (pos == 0) return deleteFromBeginning(head, tail);
+  NodeSingly* cur = head;
+  for (int i = 0; i < pos - 1 && cur->next != head; i++) cur = cur->next;
+  NodeSingly* tmp = cur->next; int val = tmp->data;
+  cur->next = tmp->next;
+  if (tmp == tail) tail = cur;
+  delete tmp; return val;
+}`,
+      deleteByValue: `// C++: Delete by value (O(n))
+int deleteByValue(NodeSingly*& head, NodeSingly*& tail, int value) {
+  if (!head) return 0;
+  int count = 0;
+  while (head && head->data == value) {
+    deleteFromBeginning(head, tail); count++;
+    if (!head) return count;
+  }
+  NodeSingly* cur = head;
+  do {
+    while (cur->next != head && cur->next->data == value) {
+      NodeSingly* tmp = cur->next;
+      cur->next = tmp->next;
+      if (tmp == tail) tail = cur;
+      delete tmp; count++;
+    }
+    cur = cur->next;
+  } while (cur != head);
+  return count;
+}`,
+      traverseForward: `// C++: Traverse forward
+void traverseForward(NodeSingly* head) {
+  if (!head) return;
+  NodeSingly* cur = head;
+  do {
+    cout << cur->data << " ";
+    cur = cur->next;
+  } while (cur != head);
+  cout << endl;
+}`,
+      linearSearch: `// C++: Linear search (O(n))
+int linearSearch(NodeSingly* head, int value) {
+  if (!head) return -1;
+  NodeSingly* cur = head; int idx = 0;
+  do {
+    if (cur->data == value) return idx;
+    cur = cur->next; idx++;
+  } while (cur != head);
+  return -1;
+}`,
+      countNodes: `// C++: Count nodes (O(n))
+int countNodes(NodeSingly* head) {
+  if (!head) return 0;
+  int count = 0; NodeSingly* cur = head;
+  do { count++; cur = cur->next; } while (cur != head);
+  return count;
+}`,
+      findMiddle: `// C++: Find middle (O(n))
+NodeSingly* findMiddle(NodeSingly* head) {
+  if (!head) return nullptr;
+  NodeSingly* slow = head; NodeSingly* fast = head;
+  while (fast->next != head && fast->next->next != head) {
+    slow = slow->next; fast = fast->next->next;
+  }
+  return slow;
+}`,
+      reverseList: `// C++: Reverse circular list (O(n))
+void reverse(NodeSingly*& head, NodeSingly*& tail) {
+  if (!head || head == tail) return;
+  NodeSingly* prev = tail; NodeSingly* cur = head; NodeSingly* first = head;
+  do {
+    NodeSingly* next = cur->next;
+    cur->next = prev; prev = cur; cur = next;
+  } while (cur != first);
+  tail = first; head = prev;
+}`,
+      splitList: `// C++: Split into two halves (O(n))
+void splitIntoHalves(NodeSingly* head, NodeSingly*& head1, NodeSingly*& tail1, 
+                     NodeSingly*& head2, NodeSingly*& tail2) {
+  if (!head) return;
+  NodeSingly* slow = head; NodeSingly* fast = head;
+  while (fast->next != head && fast->next->next != head) {
+    slow = slow->next; fast = fast->next->next;
+  }
+  head1 = head; tail1 = slow;
+  head2 = slow->next; tail2 = (fast->next == head) ? fast : fast->next;
+  tail1->next = head1; tail2->next = head2;
+}`
+    };
+
+    // ---------------------------
+    // Controller / Event Handlers
+    // ---------------------------
+    const State = { list: new CircularLinkedList('singly') };
+
+    function parseValuesInput(){ const raw=$('#listValues').value.trim(); if(!raw) return []; return raw.split(',').map(s=>s.trim()).filter(s=>s.length>0).map(x=>isNaN(Number(x))? x : Number(x)); }
+
+    function refresh() {
+      Viz.drawList(State.list);
+      Log.showArray(State.list.toArray());
+      Log.setStats({ nodes: State.list.size() });
+    }
+
+    function timeIt(fn){ const t0=performance.now(); const r=fn(); const t1=performance.now(); Log.setStats({ time: Math.round(t1-t0) }); return r; }
+
+    // Create
+    $('#btnCreateList').addEventListener('click', () => {
+      const size = Number($('#listSize').value || 0);
+      const values = parseValuesInput();
+      const type = $('#listType').value;
+      State.list = new CircularLinkedList(type);
+      let arr = values.length? values : Array.from({length:size}, (_,i)=>i+1);
+      timeIt(()=> State.list.createFromArray(arr));
+      Log.showCode(Codes.createList);
+      Log.line(`Created ${type} circular list with ${State.list.size()} nodes.`);
+      refresh();
+    });
+    $('#btnCreateRandom').addEventListener('click', () => {
+      const n= clamp(Number($('#listSize').value||6), 0, 32);
+      const type=$('#listType').value; State.list=new CircularLinkedList(type);
+      const arr = Array.from({length:n}, ()=> Math.floor(Math.random()*90+10));
+      timeIt(()=> State.list.createFromArray(arr));
+      Log.showCode(Codes.createList);
+      Log.line(`Created random ${type} list: ${JSON.stringify(arr)}`);
+      refresh();
+    });
+    $('#btnCreateEmpty').addEventListener('click', () => { const type=$('#listType').value; State.list=new CircularLinkedList(type); Log.line('Created empty list'); refresh(); });
+    $('#btnCreateSingle').addEventListener('click', () => { const type=$('#listType').value; const v=$('#insertValue').value || 1; State.list=new CircularLinkedList(type); State.list.createSingle(isNaN(Number(v))? v : Number(v)); Log.line('Created single-node list'); refresh(); });
+
+    // Speed & play controls
+    $('#animationSpeed').addEventListener('change', (e)=> Animator.setSpeed(e.target.value));
+    $('#btnPlay').addEventListener('click', ()=> Animator.play());
+    $('#btnPause').addEventListener('click', ()=> Animator.pause());
+    $('#btnStep').addEventListener('click', ()=> Animator.step());
+
+    // Insertion
+    $('#btnInsert').addEventListener('click', () => {
+      const t=$('#insertType').value; const v=$('#insertValue').value; const num = isNaN(Number(v))? v : Number(v);
+      // For position-based inserts use insertPosition as index; for after/before use it as target value
+      const posRaw = $('#insertPosition').value;
+      const pos = Number(posRaw||0);
+      const target = (posRaw!=='' ? (isNaN(Number(posRaw))? posRaw : Number(posRaw)) : null);
+      const start=performance.now();
+      let node=null; let cx='-';
+      try{
+        if(t==='beginning'){ Log.showCode(Codes.insertAtBeginning); node=State.list.insertAtBeginning(num); cx='O(1)'; }
+        else if(t==='end'){ Log.showCode(Codes.insertAtEnd); node=State.list.insertAtEnd(num); cx='O(1)'; }
+        else if(t==='position'){ Log.showCode(Codes.insertAtPosition); node=State.list.insertAtPosition(num, pos); cx='O(n)'; }
+        else if(t==='after'){ Log.showCode(Codes.insertAfter); node=State.list.insertAfterValue(target===null? num : target, num); cx='O(n)'; }
+        else if(t==='before'){ Log.showCode(Codes.insertBefore); node=State.list.insertBeforeValue(target===null? num : target, num); cx='O(n)'; }
+        else if(t==='sorted'){ Log.showCode(Codes.sortedInsert); node=State.list.sortedInsert(num); cx='O(n)'; }
+        const end=performance.now();
+        Log.setStats({ time: Math.round(end-start), complexity: cx });
+        Log.line(`Inserted ${num} via ${t}`);
+        Viz.drawList(State.list, { new: node });
+        Log.showArray(State.list.toArray());
+      }catch(err){ Toast.show(err.message||String(err), 'error'); }
+    });
+
+    // Deletion
+    $('#btnDelete').addEventListener('click', () => {
+      const t=$('#deleteType').value; const val=$('#deleteValue').value; const pos=Number(val);
+      const start=performance.now(); let cx='-'; let msg='';
+      if(t==='entire'){ if(!confirm('Delete entire list?')) return; const n=State.list.clearAll(); msg=`Cleared ${n} nodes`; cx='O(1)'; Viz.drawList(State.list); Log.showArray(State.list.toArray()); Log.setStats({ time: Math.round(performance.now()-start), complexity: cx }); Log.line(msg); return; }
+      try{
+        if(t==='beginning'){ Log.showCode(Codes.deleteFromBeginning); const del=State.list.deleteFromBeginning(); msg=`Deleted head (${del?.data})`; cx='O(1)'; }
+        else if(t==='end'){ Log.showCode(Codes.deleteFromEnd); const del=State.list.deleteFromEnd(); msg=`Deleted tail (${del?.data})`; cx= State.list.isDoubly()? 'O(1)' : 'O(n)'; }
+        else if(t==='position'){ Log.showCode(Codes.deleteAtPosition); const del=State.list.deleteAtPosition(pos); msg=`Deleted at position ${pos} (${del?.data})`; cx='O(n)'; }
+        else if(t==='byvalue'){ Log.showCode(Codes.deleteByValue); const c=State.list.deleteByValue(isNaN(pos)? val : Number(val)); msg=`Deleted by value '${val}', count=${c}`; cx='O(n)'; }
+        else if(t==='all'){ Log.showCode(Codes.deleteByValue); const c=State.list.deleteAllOccurrences(isNaN(pos)? val : Number(val)); msg=`Deleted all occurrences of '${val}', count=${c}`; cx='O(n)'; }
+        else if(t==='alternate'){ Log.showCode(Codes.deleteByValue); const c=State.list.deleteAlternateNodes(); msg=`Deleted ${c} alternate nodes`; cx='O(n)'; }
+        const end=performance.now(); Log.setStats({ time: Math.round(end-start), complexity: cx }); Log.line(msg); Viz.drawList(State.list); Log.showArray(State.list.toArray());
+      }catch(err){ Toast.show(err.message||String(err), 'error'); }
+    });
+
+    // Search
+    $('#btnSearch').addEventListener('click', async () => {
+      const t=$('#searchType').value; const raw=$('#searchValue').value; const val = isNaN(Number(raw))? raw : Number(raw);
+      let msg=''; let cx='O(n)'; let highlight=null; const t0=performance.now();
+      if(t==='linear'){ Log.showCode(Codes.linearSearch); const idx=State.list.linearSearch(val); if(idx>=0){ msg=`Value ${val} found at index ${idx}`; highlight=State.list.nthNode(idx); } else { msg=`Value ${val} not found`; } }
+      else if(t==='bypos'){ Log.showCode(Codes.linearSearch); const data=State.list.valueAtPosition(Number(val)); msg=`Value at position ${val} is ${data}`; highlight=State.list.nthNode(Number(val)); }
+      else if(t==='position'){ Log.showCode(Codes.linearSearch); const idx=State.list.positionOfValue(val); msg=`Position of ${val}: ${idx}`; if(idx>=0) highlight=State.list.nthNode(idx); }
+      else if(t==='exists'){ Log.showCode(Codes.linearSearch); const ex=State.list.exists(val); msg=`Exists(${val}) = ${ex}`; if(ex) highlight=State.list.nthNode(State.list.positionOfValue(val)); }
+      else if(t==='nth'){ Log.showCode(Codes.linearSearch); const node=State.list.nthNode(Number(val)); msg=`nth node(${val}) = ${node?.data}`; highlight=node; }
+      else if(t==='count'){ Log.showCode(Codes.countNodes); const cnt=State.list.countOccurrences(val); msg=`Count of '${val}' = ${cnt}`; }
+      const t1=performance.now(); Log.setStats({ time: Math.round(t1-t0), complexity: cx }); Log.line(msg); Viz.drawList(State.list, { current: highlight });
+    });
+
+    // Traversal
+    $('#btnTraverseForward').addEventListener('click', () => { Log.showCode(Codes.traverseForward); const arr=State.list.traverseForward(State.list.size()); Log.line(`Forward: ${JSON.stringify(arr)}`); });
+    $('#btnTraverseBackward').addEventListener('click', () => { Log.showCode(Codes.traverseForward); const arr=State.list.traverseBackward(State.list.size()); Log.line(`Backward: ${JSON.stringify(arr)}`); });
+    $('#btnStartTraversal').addEventListener('click', async () => {
+      Log.showCode(Codes.traverseForward);
+      const cycles = Math.max(1, Number($('#traverseCycles').value||1));
+      if(State.list.isEmpty()) { Toast.show('List is empty','error'); return; }
+      let cur=State.list.head; let steps=State.list.size()*cycles; for(let i=0;i<steps;i++){ Viz.drawList(State.list, { current: cur }); await wait( clamp($('#animationSpeed').value==='fast'?200: $('#animationSpeed').value==='slow'?600:350, 120, 1000) ); cur=cur.next; }
+      Log.line(`Traversed ${cycles} cycle(s)`);
+    });
+
+    // Utilities
+    $('#btnCount').addEventListener('click', ()=>{ Log.showCode(Codes.countNodes); Log.line(`Count = ${State.list.count()}`); Log.setStats({ nodes: State.list.count() }); });
+    $('#btnMiddle').addEventListener('click', ()=>{ Log.showCode(Codes.findMiddle); const m=State.list.findMiddle(); Viz.drawList(State.list, { current: m }); Log.line(`Middle = ${m?.data}`); });
+    $('#btnReverse').addEventListener('click', ()=>{ Log.showCode(Codes.reverseList); timeIt(()=> State.list.reverse()); Log.line('Reversed list'); Viz.drawList(State.list); });
+    $('#btnCheckCircular').addEventListener('click', ()=>{ Log.showCode(Codes.traverseForward); Log.line(`Is circular? ${State.list.isCircular()}`); });
+    $('#btnSplit').addEventListener('click', ()=>{ Log.showCode(Codes.splitList); const [a,b]=State.list.splitIntoHalves(); Log.line(`Split halves: A=${JSON.stringify(a.toArray())}, B=${JSON.stringify(b.toArray())}`); });
+    $('#btnClone').addEventListener('click', ()=>{ Log.showCode(Codes.createList); const c=State.list.clone(); Log.line(`Cloned: ${JSON.stringify(c.toArray())}`); });
+  // Sorting controls removed from UI; sorting still available via programmatic calls
+
+    // Advanced
+    // Advanced controls removed from UI; advanced operations can be executed programmatically
+
+    // Display
+    $('#btnDisplay').addEventListener('click', refresh);
+    $('#btnClearConsole').addEventListener('click', ()=> Log.clear());
+
+    // Export/Save/Load handlers removed because related UI buttons were removed
+
+    // Populate Applications (10)
+    (function apps(){
+      const items = [
+        {t:'Round-robin scheduling',d:'Allocate CPU time to tasks in cycles.'},
+        {t:'Buffer management',d:'Circular buffers to reuse memory slots.'},
+        {t:'Audio/video playlists',d:'Loop through tracks seamlessly.'},
+        {t:'Multi-player games',d:'Turn-based cycles among players.'},
+        {t:'Polling systems',d:'Iterate over servers/endpoints repeatedly.'},
+        {t:'Token ring networks',d:'Pass token in a circular topology.'},
+        {t:'Traffic lights',d:'Cycle through states endlessly.'},
+        {t:'OS task queues',d:'Manage processes in cyclic queues.'},
+        {t:'Cache eviction',d:'Clock algorithm approximation.'},
+        {t:'Simulation engines',d:'Cycle events in time steps.'},
+      ];
+      const grid=$('#appsGrid'); grid.innerHTML = items.map(x=>`<div class="panel"><div class="panel-body"><h3>${x.t}</h3><p>${x.d}</p></div></div>`).join('');
+    })();
+
+    // Complexity table
+    (function complexity(){
+      const rows = [
+        ['Create empty','O(1)','O(1)','Initialize pointers'],
+        ['Create from array','O(n)','O(1)','Insert end n times'],
+        ['Insert at beginning','O(1)','O(1)','With tail'],
+        ['Insert at end','O(1)','O(1)','With tail'],
+        ['Insert at position','O(n)','O(1)','Traverse to position'],
+        ['Insert after/before','O(n)','O(1)','Search target'],
+        ['Sorted insert','O(n)','O(1)','Find place'],
+        ['Delete beginning','O(1)','O(1)',''],
+        ['Delete end','O(n) / O(1)','O(1)','Singly vs doubly with tail'],
+        ['Delete at position','O(n)','O(1)',''],
+        ['Delete by value','O(n)','O(1)',''],
+        ['Delete all occurrences','O(n)','O(1)',''],
+        ['Delete alternate','O(n)','O(1)',''],
+        ['Traversal forward/back','O(n)','O(1)','Once around'],
+        ['Linear search','O(n)','O(1)',''],
+        ['Count nodes','O(n)','O(1)','Unless size cached'],
+        ['Find middle','O(n)','O(1)','Tortoise-hare'],
+        ['Reverse','O(n)','O(1)','In-place pointers'],
+        ['Split into halves','O(n)','O(1)',''],
+        ['Clone list','O(n)','O(n)','New nodes'],
+        ['Sorting (bubble/selection)','O(n²)','O(1)','In-place by rebuild'],
+        ['Sorting (merge)','O(n log n)','O(n)','Array then rebuild'],
+        ['Swap nodes','O(n)','O(1)','Search nodes'],
+        ['Josephus','O(nk)','O(1)','Naive elimination'],
+        ['Rotate','O(k)','O(1)','Move head/tail'],
+        ['Exchange ends','O(n) / O(1)','O(1)','Singly vs doubly'],
+        ['Remove dup sorted','O(n)','O(1)',''],
+        ['Remove dup unsorted','O(n)','O(n)','Set'],
+        ['Intersection','O(n+m)','O(n)','Set'],
+        ['Check palindrome','O(n)','O(n)','Array compare'],
+        ['Rearrange odd-even','O(n)','O(1)','Two lists then merge'],
+        ['kth from end','O(n)','O(1)','Two pointers'],
+        ['Pairwise swap','O(n)','O(1)','Swap data'],
+        ['Add two numbers','O(n+m)','O(1)','Digit lists']
+      ];
+      const tbody=$('#complexityTable tbody');
+      tbody.innerHTML = rows.map(r=>{
+        const chip = r[1].includes('1)')? 'green' : r[1].includes('²')? 'red' : r[1].includes('log')? 'yellow' : r[1].includes('n)')? 'yellow':'green';
+        return `<tr><td>${r[0]}</td><td><span class="chip ${chip}">${r[1]}</span></td><td>${r[2]}</td><td>${r[3]}</td></tr>`;
+      }).join('');
+      // simple sort
+      $$('#complexityTable th').forEach(th=> th.addEventListener('click', () => {
+        const k=th.dataset.key; const idx={op:0,time:1,space:2,desc:3}[k]; const rows=[...tbody.querySelectorAll('tr')];
+        rows.sort((a,b)=> a.children[idx].textContent.localeCompare(b.children[idx].textContent));
+        tbody.innerHTML=''; rows.forEach(r=>tbody.appendChild(r));
+      }));
+      // Graph placeholder
+      $('#complexityGraph').innerHTML = '<div style="height:100%;display:grid;place-items:center;color:var(--muted)">Complexity graph: compare growth qualitatively</div>';
+    })();
+
+    // Comparison table
+    (function comparison(){
+      const wrap=$('#comparisonTableWrap');
+      function render(target){
+        const rows = [
+          ['Insert head', 'O(1)', 'O(1)', 'O(1)', 'O(1)'],
+          ['Insert tail', 'O(1)', 'O(1)', 'O(1)', 'O(1)'],
+          ['Random access', 'O(n)', 'O(n)', 'O(1)', 'O(n)'],
+          ['Delete at pos', 'O(n)', 'O(n)', 'O(n)', 'O(n)'],
+          ['Traverse', 'O(n)', 'O(n)', 'O(n)', 'O(n)']
+        ];
+        wrap.innerHTML = `<table><thead><tr><th>Operation</th><th>Singly Circ</th><th>Doubly Circ</th><th>Array</th><th>Queue</th></tr></thead><tbody>${rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+      }
+      // render initial based on selection
+      render($('#compareToggle').value);
+      $('#compareToggle').addEventListener('change', (e)=> render(e.target.value));
+    })();
+
+    // Errors & Edge Cases sections removed from DOM; JS content omitted per request
+
+    // Practice problems section removed per user request
+
+    // Code Implementation section removed from DOM; code tabs omitted per request
+
+    // Intro & hero SVG simple animations
+    (function hero(){
+      const g=$('#heroRing'); if(!g) return; const n=8; const R=120; for(let i=0;i<n;i++){ const ang=(Math.PI*2/n)*i; const x=R*Math.cos(ang), y=R*Math.sin(ang); const node=document.createElementNS('http://www.w3.org/2000/svg','circle'); node.setAttribute('cx', x); node.setAttribute('cy', y); node.setAttribute('r', 18); node.setAttribute('fill', i===0? '#22c55e' : '#2563eb'); node.setAttribute('filter','url(#glow)'); g.appendChild(node); }
+      let rot=0; setInterval(()=>{ rot=(rot+0.8)%360; g.setAttribute('transform',`translate(300,200) rotate(${rot})`); }, 30);
+    })();
+    (function intro(){
+      const svg=$('#introSvg'); const NS='http://www.w3.org/2000/svg'; const w=480,h=220; const cx=w/2, cy=h/2, r=70; const a1=document.createElementNS(NS,'circle'); a1.setAttribute('cx', cx-r); a1.setAttribute('cy', cy); a1.setAttribute('r', 20); a1.setAttribute('fill','#22c55e'); svg.appendChild(a1); const a2=document.createElementNS(NS,'circle'); a2.setAttribute('cx', cx+r); a2.setAttribute('cy', cy); a2.setAttribute('r', 20); a2.setAttribute('fill','#2563eb'); svg.appendChild(a2); const path=document.createElementNS(NS,'path'); path.setAttribute('d',`M ${cx-r} ${cy-20} C ${cx-r-30} ${cy-60}, ${cx+r+30} ${cy-60}, ${cx+r} ${cy-20}`); path.setAttribute('fill','none'); path.setAttribute('stroke','#64748b'); path.setAttribute('stroke-width','2'); path.setAttribute('marker-end','url(#arrowhead)'); svg.appendChild(path); const path2=document.createElementNS(NS,'path'); path2.setAttribute('d',`M ${cx+r} ${cy+20} C ${cx+r+30} ${cy+60}, ${cx-r-30} ${cy+60}, ${cx-r} ${cy+20}`); path2.setAttribute('fill','none'); path2.setAttribute('stroke','#94a3b8'); path2.setAttribute('stroke-width','2'); path2.setAttribute('marker-end','url(#arrowhead)'); svg.appendChild(path2);
+    })();
+
+    // Initial draw
+    refresh();
+  </script>
+</body>
+</html>
