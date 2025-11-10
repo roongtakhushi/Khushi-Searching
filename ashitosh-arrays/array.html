@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Array Visualization Dashboard</title>
+<style>
+    body {
+        font-family: 'Poppins', sans-serif;
+        background: #f4f6fa;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        height: 100vh;
+    }
+    .console {
+        width: 25%;
+        background: #222;
+        color: #fff;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        border-right: 3px solid #111;
+    }
+    .console h2 {
+        text-align: center;
+        color: #00bfff;
+    }
+    label, input, button {
+        margin-top: 10px;
+        font-size: 1rem;
+    }
+    input {
+        width: 100%;
+        padding: 8px;
+        border: none;
+        border-radius: 5px;
+    }
+    button {
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        background: #00bfff;
+        color: white;
+        cursor: pointer;
+        font-weight: bold;
+    }
+    button:hover {
+        background: #0090c9;
+    }
+    .visual {
+        flex-grow: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+        padding: 30px;
+    }
+    .element {
+        background: #00bfff;
+        color: white;
+        padding: 20px;
+        width: 60px;
+        height: 60px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        transition: 0.3s;
+    }
+</style>
+</head>
+<body>
+
+<div class="console">
+    <div>
+        <h2>Array Console</h2>
+        <label>Enter Element:</label>
+        <input type="number" id="elementInput" placeholder="e.g., 10" />
+
+        <label>Enter Index:</label>
+        <input type="number" id="indexInput" placeholder="e.g., 2" />
+
+        <button onclick="insertElement()">Insert</button>
+        <button onclick="deleteElement()">Delete</button>
+        <button onclick="updateElement()">Update</button>
+        <button onclick="resetArray()">Reset</button>
+    </div>
+
+    <p style="text-align:center; font-size:0.9rem; opacity:0.8;">
+        Tip: Try inserting, deleting, and updating elements!
+    </p>
+</div>
+
+<div class="visual" id="arrayContainer"></div>
+
+<script>
+    let arr = [];
+
+    function renderArray() {
+        const container = document.getElementById("arrayContainer");
+        container.innerHTML = "";
+        arr.forEach((value, index) => {
+            const box = document.createElement("div");
+            box.className = "element";
+            box.textContent = value;
+            box.title = "Index: " + index;
+            container.appendChild(box);
+        });
+    }
+
+    function insertElement() {
+        const val = document.getElementById("elementInput").value;
+        const idx = document.getElementById("indexInput").value;
+        if (val === "") return alert("Please enter a value!");
+
+        if (idx === "") arr.push(Number(val));
+        else if (idx < 0 || idx > arr.length) return alert("Invalid index!");
+        else arr.splice(idx, 0, Number(val));
+
+        renderArray();
+    }
+
+    function deleteElement() {
+        const idx = document.getElementById("indexInput").value;
+        if (idx === "") return alert("Please enter an index to delete!");
+        if (idx < 0 || idx >= arr.length) return alert("Invalid index!");
+        arr.splice(idx, 1);
+        renderArray();
+    }
+
+    function updateElement() {
+        const val = document.getElementById("elementInput").value;
+        const idx = document.getElementById("indexInput").value;
+        if (val === "" || idx === "") return alert("Please enter both value and index!");
+        if (idx < 0 || idx >= arr.length) return alert("Invalid index!");
+        arr[idx] = Number(val);
+        renderArray();
+    }
+
+    function resetArray() {
+        arr = [];
+        renderArray();
+    }
+
+    // Initialize empty array view
+    renderArray();
+</script>
+
+</body>
+</html>
